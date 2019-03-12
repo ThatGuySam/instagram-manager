@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "express": "^4.14.0",
+    "instagram-private-api": "^0.6.8",
     "next": "^8.0.3",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"
