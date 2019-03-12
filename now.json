@@ -1,6 +1,10 @@
 {
     "name": "instagram-manager",
     "version": 1,
+    "env": {
+        "USERNAME": "@igm-username",
+        "PASSWORD": "@igm-password"
+    },
     "alias": [
       "instagram-manager.now.sh"
     ]
