@@ -68,3 +68,7 @@ typings/
 .env
 /stats.json
 /now-secrets.json
+
+# Cookies Folder
+cookies/*
+!cookies/.gitkeep 
