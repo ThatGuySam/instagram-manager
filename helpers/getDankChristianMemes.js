@@ -7,5 +7,5 @@ module.exports =  async function () {
         .then(res => data = res.data)
         .catch(console.log)
     
-    return data.data
+    return data.data.children
 }
