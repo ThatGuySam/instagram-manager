@@ -18,13 +18,16 @@ app.prepare().then(() => {
 
     const post = redditPosts[0]
 
-    // console.log('post', post)
+    res.header('Content-Type','application/json')
+    res.send(JSON.stringify(post, null, 4))
+
+    console.log('post', post)
 
     const response = await postToInstagram(post.data.url, post.data.title)
 
-    // console.log('response', response)
-    
-    res.send(response)
+    console.log('response', response)
+
+    console.log('-- Finished Posting')
   })
 
   // server.get('/posts/:id', (req, res) => {

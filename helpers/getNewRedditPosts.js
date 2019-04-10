@@ -16,7 +16,7 @@ module.exports =  async function () {
 
     // Has posted
     const igPosts = await getPosts(process.env.USERNAME)
-    console.log('igPosts', igPosts)
+    // console.log('igPosts', igPosts)
     const newJpegPosts = jpegPosts.filter(redditPost => {
         const redditPostTitle = redditPost.data.title
 
