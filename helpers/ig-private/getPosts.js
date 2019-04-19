@@ -6,7 +6,7 @@ module.exports = async function (username) {
 
     const device = new Client.Device(process.env.USERNAME)//getDevice()
     console.log('device', device)
-    const storage = new Client.CookieFileStorage(__dirname + '/../cookies/storage.json')
+    const storage = new Client.CookieFileStorage(__dirname + '/../cookies/client-private.json')
 
     // And go for login
     const relationship = await Client.Session.create(device, storage, process.env.USERNAME, process.env.PASSWORD)
