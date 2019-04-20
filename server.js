@@ -21,8 +21,10 @@ app.prepare().then(() => {
 
     const redditPost = redditPosts[0]
 
+    const memesPosted = postedMemes.getAll().map(meme => meme.data.title)
+
     res.header('Content-Type','application/json')
-    res.send(JSON.stringify(postedMemes.getAll(), null, 4))
+    res.send(JSON.stringify(memesPosted, null, 4))
 
     // console.log('redditPosts', redditPosts)
 
