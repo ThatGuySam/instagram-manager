@@ -37,9 +37,9 @@ app.prepare().then(() => {
     console.log('-- Finished Posting')
   })
 
-  // server.get('/posts/:id', (req, res) => {
-  //   return app.render(req, res, '/posts', { id: req.params.id })
-  // })
+  server.get('/post-mockup/:id', (req, res) => {
+    return app.render(req, res, '/post-mockup', { id: req.params.id })
+  })
 
   server.get('*', (req, res) => {
     return handle(req, res)
