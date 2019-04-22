@@ -33,11 +33,11 @@ export default class extends Component {
         style={{ maxWidth: 1080 }}
       >
         <div
-          className='d-flex flex-column'
+          className='d-flex flex-column align-items-stretch'
           style={{ minHeight: 1080, maxHeight: 1350 }}
         >
-          <div className='d-flex flex-column flex-fill justify-content-center'>
-            <img src={redditPost.data.url} className='w-100 h-100 pt-5 px-5' style={{ objectFit: 'contain' }} />
+          <div className='d-flex flex-fill flex-grow-1 align-self-stretch'>
+            <img src={redditPost.data.url} className='w-100 h-100 pt-5 px-5' style={{ objectFit: 'contain', OObjectFit: 'contain' }} />
           </div>
           <img src='/static/reddit-banner.png' className='img-fluid align-self-end w-100 px-4' />
         </div>
