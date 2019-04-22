@@ -23,24 +23,10 @@ const matchToIgPosts = function (redditPostTitle, igPosts) {
     })
 }
 
-const matchToStoredPosts = function (redditPostTitle, memesThatHaveBeenPosted) {
+const matchToStoredPosts = function (redditPost, memesThatHaveBeenPosted) {
     if (memesThatHaveBeenPosted.length === 0) return false
     
-    return memesThatHaveBeenPosted.some(postedRedditPost => {
-        // console.log('postedRedditPost', postedRedditPost)
-        const postedRedditPostTitle = postedRedditPost.data.title
-        const matches = postedRedditPostTitle.includes(redditPostTitle)
-
-        if (matches) console.log(`Found matching stored post for ${redditPostTitle}`)
-
-        // console.log('Comparing')
-        // console.log(redditPostTitle)
-        // console.log('to reddit post')
-        // console.log(postedRedditPostTitle)
-        // console.log('matches', matches)
-
-        return matches
-    })
+    return (redditPost.data.name in memesThatHaveBeenPosted)
 }
 
 
@@ -61,7 +47,7 @@ module.exports = async function () {
     const igPosts = await getPosts(process.env.USERNAME)
     // Get posted memes from local memory
     const memesThatHaveBeenPosted = postedMemes.getAll()
-    console.log('memesThatHaveBeenPosted', memesThatHaveBeenPosted.length)
+    console.log('memesThatHaveBeenPosted', Object.keys(memesThatHaveBeenPosted).length)
     // console.log('igPosts', igPosts)
     const newJpegPosts = jpegPosts.filter(redditPost => {
         const redditPostTitle = redditPost.data.title
@@ -71,7 +57,7 @@ module.exports = async function () {
         // Do any posts from instagram contain this reddit post
         const hasMatchingIgPost = matchToIgPosts(redditPostTitle, igPosts)
         // Check if any of the stored posted match
-        const hasMatchingStoredPost = matchToStoredPosts(redditPostTitle, memesThatHaveBeenPosted)
+        const hasMatchingStoredPost = matchToStoredPosts(redditPost, memesThatHaveBeenPosted)
 
         const hasntPosted = !(hasMatchingIgPost || hasMatchingStoredPost)
 
