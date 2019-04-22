@@ -33,7 +33,7 @@ export default class extends Component {
       >
         <div
           className='d-flex flex-column mt-5 mx-5'
-          style={{ height: 1080 }}
+          style={{ minHeight: 1080, maxHeight: 1350 }}
         >
           <div className='d-flex flex-column flex-fill justify-content-center'>
             <img src={redditPost.data.url} className='w-100 h-100' style={{ objectFit: 'contain' }} />
