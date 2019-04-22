@@ -1,6 +1,7 @@
 const express = require('express')
 const next = require('next')
 
+const currentDomain = require('./helpers/currentDomain')
 const postMeme = require('./helpers/postMeme')
 const getNewRedditPosts = require('./helpers/getNewRedditPosts')
 const postedMemes = require('./helpers/postedMemes')
@@ -14,6 +15,7 @@ app.prepare().then(() => {
   const server = express()
 
   server.get('/post', async (req, res) => {
+    currentDomain.set(req.protocol + '://' + req.get('host'))
 
     const redditPosts = await getNewRedditPosts()
 

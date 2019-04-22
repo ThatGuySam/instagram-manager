@@ -1,23 +1,28 @@
 const postToInstagram = require('./ig/post')
 const postedMemes = require('./postedMemes')
 const makeHashtags = require('./makeHashtags')
-// const makeCaption = require('./makeCaption')
+const saveMockup = require('./saveMockup')
+const currentDomain = require('./currentDomain')
 
-module.exports =  async function (post) {
+module.exports =  async function (redditPost) {
+    const domain = currentDomain.get()
+    const memeImageUrl = `${domain}/static/memes/${redditPost.data.name}.jpg`
 
     // Add it to postedMemes
-    postedMemes.store(post)
+    postedMemes.store(redditPost)
     
-    const postTitle = post.data.title
-    const postAuthor = post.data.author
+    const postTitle = redditPost.data.title
+    const postAuthor = redditPost.data.author
     const hashtags = makeHashtags()
 
     // Put it all together
     const caption = `${postTitle} . Stolen from u/${postAuthor} . ${hashtags}`
 
+    const postFilePath = await saveMockup(redditPost)
+
     // console.log('caption', caption)
     
-    const response = await postToInstagram(post.data.url, caption)
+    const response = await postToInstagram(memeImageUrl, caption)
     
     return response
 }
