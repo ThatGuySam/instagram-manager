@@ -1,3 +1,5 @@
+const isDev = (process.env.NODE_ENV !== 'production')
+
 const christianMemeHashtags = [
     'biblememes',
     'christianmemes',
@@ -38,8 +40,12 @@ module.exports = function () {
 
     const randomMemeHashtags = memeHashtags.sort(() => .5 - Math.random()).slice(0,10)
 
-    return [
+    const combinedHashtags = [
         ...randomChristianHashtags,
         ...randomMemeHashtags
-    ].map(hashtag => `#${hashtag}`).join(' ')
+    ]
+
+    if (isDev) return combinedHashtags.join(' ')
+
+    return combinedHashtags.map(hashtag => `#${hashtag}`).join(' ')
 }
