@@ -72,3 +72,7 @@ typings/
 # Cookies Folder
 cookies/*
 !cookies/.gitkeep 
+
+# Memes Folder
+static/memes/*
+!static/memes/.gitkeep 
