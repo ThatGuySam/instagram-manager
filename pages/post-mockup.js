@@ -28,6 +28,7 @@ export default class extends Component {
     const { redditPost } = this.props
     return (
       <div
+        id='mockup'
         className='container px-0'
         style={{ maxWidth: 1080 }}
       >
