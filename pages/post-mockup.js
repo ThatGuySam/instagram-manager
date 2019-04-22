@@ -13,7 +13,7 @@ export default class extends Component {
     if (dankChristianMemes.length !== 0) {
       redditPost = dankChristianMemes.find(meme => meme.data.name == id )
 
-      console.log('dankChristianMemes', dankChristianMemes.map(meme => meme.data.name))
+      // console.log('dankChristianMemes', dankChristianMemes.map(meme => meme.data.name))
       // console.log('redditpost', redditPost)
     }
 
