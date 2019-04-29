@@ -30,6 +30,19 @@ const matchToStoredPosts = function (redditPost, memesThatHaveBeenPosted) {
 }
 
 
+const isSupportedPost = function (post) {
+    const hasUrl = (typeof post.data.url !== 'undefined')
+
+    if (!hasUrl) return false
+
+    const hasJpeg = (post.data.url.split('.').pop() === 'jpg')
+    const hasPng = (post.data.url.split('.').pop() === 'png')
+    const hasImage = (hasJpeg || hasPng)
+
+    return hasImage
+}
+
+
 module.exports = async function () {
 
     const dankChristianMemes = await getDankChristianMemes()
@@ -37,10 +50,10 @@ module.exports = async function () {
     // Is not NSFW
 
     // Has url
-    const postsWithURLs = dankChristianMemes.filter(post => typeof post.data.url !== 'undefined')
+    // const postsWithURLs = dankChristianMemes.filter(post => typeof post.data.url !== 'undefined')
 
     // Is a jpg
-    const jpegPosts = postsWithURLs.filter(post => post.data.url.split('.').pop() === 'jpg')
+    const supportedPosts = dankChristianMemes.filter(isSupportedPost)
 
     // Has posted
     // Get IG posts
@@ -49,7 +62,7 @@ module.exports = async function () {
     const memesThatHaveBeenPosted = postedMemes.getAll()
     console.log('memesThatHaveBeenPosted', Object.keys(memesThatHaveBeenPosted).length)
     // console.log('igPosts', igPosts)
-    const newJpegPosts = jpegPosts.filter(redditPost => {
+    const newSupportedPosts = supportedPosts.filter(redditPost => {
         const redditPostTitle = redditPost.data.title
         
         console.log(`Searching for "${redditPostTitle}"`)
@@ -68,5 +81,5 @@ module.exports = async function () {
         return hasntPosted
     })
     
-    return newJpegPosts
+    return newSupportedPosts
 }

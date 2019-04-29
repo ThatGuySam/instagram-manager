@@ -1,3 +1,4 @@
+const is = require('is_js')
 const postedMemes = {}
 
 module.exports.getAll = function () {
@@ -5,6 +6,11 @@ module.exports.getAll = function () {
 }
 
 module.exports.store = function (redditPost) {
+    if (is.empty(redditPost)) {
+        console.log('Can\'t store. Post is empty. ')
+        return
+    }
+
     console.log(`Storing Meme "${redditPost.data.title}"`)
     return postedMemes[redditPost.data.name] = redditPost
 }
