@@ -19,8 +19,6 @@ module.exports =  async function (redditPost) {
     // Put it all together
     const caption = `${postTitle} . Stolen from u/${postAuthor} . ${hashtags}`
 
-    const postFilePath = await saveMockup(redditPost)
-
     // console.log('caption', caption)
     
     const response = await postToInstagram(memeImageUrl, caption)
