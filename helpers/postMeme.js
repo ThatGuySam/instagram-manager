@@ -6,7 +6,8 @@ const currentDomain = require('./currentDomain')
 
 module.exports =  async function (redditPost) {
     const domain = currentDomain.get()
-    const memeImageUrl = `${domain}/static/memes/${redditPost.data.name}.jpg`
+    // const memeImageUrl = `${domain}/static/memes/${redditPost.data.name}.jpg`
+    const memeImageUrl = `${process.env.SCREENSHOT_ENDPOINT}${redditPost.data.name}.jpg?quality=100`
 
     // Add it to postedMemes
     postedMemes.store(redditPost)

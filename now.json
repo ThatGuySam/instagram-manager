@@ -3,7 +3,8 @@
     "version": 1,
     "env": {
         "USERNAME": "@igm-username",
-        "PASSWORD": "@igm-password"
+        "PASSWORD": "@igm-password",
+        "SCREENSHOT_ENDPOINT": "@screenshot-endpoint"
     },
     "alias": [
       "instagram-manager.now.sh"
