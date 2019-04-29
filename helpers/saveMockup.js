@@ -1,7 +1,4 @@
-const path = require('path')
 const puppeteer = require('puppeteer')
-// const nextRoutes = require('next-routes')
-// const Router = require('next/router').default
 
 const currentDomain = require('./currentDomain')
 
@@ -44,21 +41,25 @@ async function screenshotDOMElement(opts = {}, page) {
 
 module.exports = async function (redditPost) {
 
+    const browserWidth = 1500
+    const browserHeight = 1500
     const domain = currentDomain.get()
     const mockupUrl = `${domain}/post-mockup/${redditPost.data.name}`
-    const filePath = `./static/memes/${redditPost.data.name}.jpg`
+    const mockupSelector = '#mockup'
+    const filePath = `./static/memes/${redditPost.data.name}.png`
+
 
     const browser = await puppeteer.launch()
     const page = await browser.newPage()
 
-    page.setViewport({ width: 1500, height: 1500, deviceScaleFactor: 1 })
+    page.setViewport({ width: browserWidth, height: browserHeight, deviceScaleFactor: 1 })
 
     await page.goto(mockupUrl, { waitUntil: 'networkidle2' })
 
     await screenshotDOMElement({
-    path: filePath,
-    selector: '#mockup',
-    // padding: 16
+        path: filePath,
+        selector: mockupSelector,
+        // padding: 16
     }, page)
 
     await browser.close()
