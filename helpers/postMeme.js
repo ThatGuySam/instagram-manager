@@ -1,7 +1,6 @@
 const postToInstagram = require('./ig/post')
 const postedMemes = require('./postedMemes')
 const makeHashtags = require('./makeHashtags')
-const saveMockup = require('./saveMockup')
 const currentDomain = require('./currentDomain')
 
 module.exports =  async function (redditPost) {
