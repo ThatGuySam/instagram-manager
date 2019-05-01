@@ -35,9 +35,10 @@ const isSupportedPost = function (post) {
 
     if (!hasUrl) return false
 
-    const hasJpeg = (post.data.url.split('.').pop() === 'jpg')
+    const hasJpeg = (post.data.url.split('.').pop() === 'jpeg')
+    const hasJpg = (post.data.url.split('.').pop() === 'jpg')
     const hasPng = (post.data.url.split('.').pop() === 'png')
-    const hasImage = (hasJpeg || hasPng)
+    const hasImage = (hasJpeg || hasPng || hasJpg)
 
     return hasImage
 }
