@@ -1,25 +1,30 @@
 import React, { Component } from 'react'
 
-const getDankChristianMemes = require('../helpers/getDankChristianMemes')
-const getImageUrlFromRedditPost = require('../helpers/getImageUrlFromRedditPost')
+// const getDankChristianMemes = require('../helpers/getDankChristianMemes')
+// const getImageUrlFromRedditPost = require('../helpers/getImageUrlFromRedditPost')
 // const postedMemes = require('../helpers/postedMemes')
+const getRedditPost = require('../helpers/getRedditPost')
 
 export default class extends Component {
   static async getInitialProps ({ query: { id } }) {
 
-    let imageUrl
+    if (!id.includes('_')) return {}
+
+    const imageUrl = await getRedditPost(id)
+
+    console.log('imageUrl', imageUrl)
     
-    const dankChristianMemes = await getDankChristianMemes()
+    // const dankChristianMemes = await getDankChristianMemes()
 
-    if (dankChristianMemes.length !== 0) {
-      const redditPost = dankChristianMemes.find(meme => meme.data.name == id )
+    // if (dankChristianMemes.length !== 0) {
+    //   const redditPost = dankChristianMemes.find(meme => meme.data.name == id )
 
-      imageUrl = getImageUrlFromRedditPost(redditPost)
+    //   imageUrl = getImageUrlFromRedditPost(redditPost)
       
 
-      // console.log('dankChristianMemes', dankChristianMemes.map(meme => meme.data.name))
-      // console.log('redditpost', redditPost)
-    }
+    //   // console.log('dankChristianMemes', dankChristianMemes.map(meme => meme.data.name))
+    //   // console.log('redditpost', redditPost)
+    // }
 
     // const dankChristianMemes = await getDankChristianMemes()
 

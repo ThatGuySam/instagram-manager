@@ -23,11 +23,11 @@ module.exports = function (post) {
 
     if (urlIsImage) return post.data.url
 
-    // const imgurUrl = checkForImgurUrl(post.data.url)
+    const imgurUrl = checkForImgurUrl(post.data.url)
 
-    // if (imgurUrl !== null) {
-    //     return imgurUrl
-    // }
+    if (imgurUrl !== null) {
+        return imgurUrl
+    }
 
     return null
 }
