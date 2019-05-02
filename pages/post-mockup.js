@@ -1,31 +1,40 @@
 import React, { Component } from 'react'
 
-const getDankChristianMemes = require('../helpers/getDankChristianMemes')
+// const getDankChristianMemes = require('../helpers/getDankChristianMemes')
+// const getImageUrlFromRedditPost = require('../helpers/getImageUrlFromRedditPost')
 // const postedMemes = require('../helpers/postedMemes')
+const getRedditPost = require('../helpers/getRedditPost')
 
 export default class extends Component {
   static async getInitialProps ({ query: { id } }) {
 
-    let redditPost
+    if (!id.includes('_')) return {}
+
+    const imageUrl = await getRedditPost(id)
+
+    console.log('imageUrl', imageUrl)
     
-    const dankChristianMemes = await getDankChristianMemes()
+    // const dankChristianMemes = await getDankChristianMemes()
 
-    if (dankChristianMemes.length !== 0) {
-      redditPost = dankChristianMemes.find(meme => meme.data.name == id )
+    // if (dankChristianMemes.length !== 0) {
+    //   const redditPost = dankChristianMemes.find(meme => meme.data.name == id )
 
-      // console.log('dankChristianMemes', dankChristianMemes.map(meme => meme.data.name))
-      // console.log('redditpost', redditPost)
-    }
+    //   imageUrl = getImageUrlFromRedditPost(redditPost)
+      
+
+    //   // console.log('dankChristianMemes', dankChristianMemes.map(meme => meme.data.name))
+    //   // console.log('redditpost', redditPost)
+    // }
 
     // const dankChristianMemes = await getDankChristianMemes()
 
-    return { redditPost }
+    return { imageUrl }
   }
 
 
 
   render () {
-    const { redditPost } = this.props
+    const { imageUrl } = this.props
     return (
       <div
         id='mockup'
@@ -40,7 +49,7 @@ export default class extends Component {
             className='d-flex flex-fill flex-grow-1'
           >
             <img 
-              src={redditPost.data.url}
+              src={imageUrl}
               className='img-fluid w-100 pt-5 px-5'
               style={{
                 maxHeight: 1235,

@@ -1,7 +1,6 @@
 const postToInstagram = require('./ig/post')
 const postedMemes = require('./postedMemes')
 const makeHashtags = require('./makeHashtags')
-const saveMockup = require('./saveMockup')
 const currentDomain = require('./currentDomain')
 
 module.exports =  async function (redditPost) {
@@ -18,8 +17,6 @@ module.exports =  async function (redditPost) {
 
     // Put it all together
     const caption = `${postTitle} . Stolen from u/${postAuthor} . ${hashtags}`
-
-    const postFilePath = await saveMockup(redditPost)
 
     // console.log('caption', caption)
     

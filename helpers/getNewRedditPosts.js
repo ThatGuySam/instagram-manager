@@ -1,6 +1,7 @@
 const getDankChristianMemes = require('./getDankChristianMemes')
 const getPosts = require('./ig/getPosts')
 const postedMemes = require('./postedMemes')
+const getImageUrlFromRedditPost = require('./getImageUrlFromRedditPost')
 
 
 const matchToIgPosts = function (redditPostTitle, igPosts) {
@@ -30,19 +31,6 @@ const matchToStoredPosts = function (redditPost, memesThatHaveBeenPosted) {
 }
 
 
-const isSupportedPost = function (post) {
-    const hasUrl = (typeof post.data.url !== 'undefined')
-
-    if (!hasUrl) return false
-
-    const hasJpeg = (post.data.url.split('.').pop() === 'jpg')
-    const hasPng = (post.data.url.split('.').pop() === 'png')
-    const hasImage = (hasJpeg || hasPng)
-
-    return hasImage
-}
-
-
 module.exports = async function () {
 
     const dankChristianMemes = await getDankChristianMemes()
@@ -52,8 +40,15 @@ module.exports = async function () {
     // Has url
     // const postsWithURLs = dankChristianMemes.filter(post => typeof post.data.url !== 'undefined')
 
-    // Is a jpg
-    const supportedPosts = dankChristianMemes.filter(isSupportedPost)
+    // Is a supported post type
+    const supportedPosts = dankChristianMemes.filter(post => {
+        const imageUrl = getImageUrlFromRedditPost(post)
+        const isString = (typeof imageUrl === 'string' || imageUrl instanceof String)
+
+        console.log('imageUrl', imageUrl)
+
+        return (isString && imageUrl.length !== 0)
+    })
 
     // Has posted
     // Get IG posts
