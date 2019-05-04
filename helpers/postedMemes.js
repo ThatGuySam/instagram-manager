@@ -1,7 +1,18 @@
 const is = require('is_js')
-const postedMemes = {}
+let postedMemes = {}
 
 module.exports.getAll = function () {
+    return postedMemes
+}
+
+module.exports.getNames = function () {
+    return Object.entries(postedMemes).map(memeObject => {
+        return memeObject[1].data.title
+    })
+}
+
+module.exports.clear = function () {
+    postedMemes = {}
     return postedMemes
 }
 
