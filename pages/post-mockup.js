@@ -8,9 +8,10 @@ const getRedditPost = require('../helpers/getRedditPost')
 export default class extends Component {
   static async getInitialProps ({ query: { id } }) {
 
-    if (!id.includes('_')) return {}
+    // Get post id
+    const postId = id.includes('_') ? id.split('_')[1] : id
 
-    const imageUrl = await getRedditPost(id)
+    const imageUrl = await getRedditPost(postId)
 
     console.log('imageUrl', imageUrl)
     
