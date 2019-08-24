@@ -2,11 +2,12 @@ const postToInstagram = require('./ig/post')
 const postedMemes = require('./postedMemes')
 const makeHashtags = require('./makeHashtags')
 const currentDomain = require('./currentDomain')
+const makePostImageUrl = require('./routes').postImage
 
 module.exports =  async function (redditPost) {
     const domain = currentDomain.get()
     // const memeImageUrl = `${domain}/static/memes/${redditPost.data.name}.jpg`
-    const memeImageUrl = `${process.env.SCREENSHOT_ENDPOINT}${redditPost.data.name}.jpg?quality=100`
+    const memeImageUrl = makePostImageUrl(redditPost.data.name)
 
     // Add it to postedMemes
     postedMemes.store(redditPost)
