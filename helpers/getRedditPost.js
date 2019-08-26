@@ -15,5 +15,5 @@ module.exports =  async function (postName) {
 
     const redditPost = data.data.children[0]
 
-    return getImageUrlFromRedditPost(redditPost)
+    return redditPost
 }

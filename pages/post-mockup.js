@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 // const getDankChristianMemes = require('../helpers/getDankChristianMemes')
 // const getImageUrlFromRedditPost = require('../helpers/getImageUrlFromRedditPost')
 // const postedMemes = require('../helpers/postedMemes')
-const getRedditPost = require('../helpers/getRedditPost')
+const getRedditPostImage = require('../helpers/getRedditPostImage')
 
 export default class extends Component {
   static async getInitialProps ({ query: { id } }) {
@@ -11,7 +11,7 @@ export default class extends Component {
     // Get post id
     const postId = id.includes('_') ? id.split('_')[1] : id
 
-    const imageUrl = await getRedditPost(postId)
+    const imageUrl = await getRedditPostImage(postId)
 
     console.log('imageUrl', imageUrl)
     
