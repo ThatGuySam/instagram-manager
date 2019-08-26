@@ -1,8 +1,8 @@
 const postToInstagram = require('./ig/post')
 const postedMemes = require('./postedMemes')
-const makeHashtags = require('./makeHashtags')
 const currentDomain = require('./currentDomain')
 const makePostImageUrl = require('./routes').postImage
+const makeCaption = require('./makeCaption')
 
 module.exports =  async function (redditPost) {
     const domain = currentDomain.get()
@@ -11,13 +11,9 @@ module.exports =  async function (redditPost) {
 
     // Add it to postedMemes
     postedMemes.store(redditPost)
-    
-    const postTitle = redditPost.data.title
-    const postAuthor = redditPost.data.author
-    const hashtags = makeHashtags()
 
     // Put it all together
-    const caption = `${postTitle} . Stolen from u/${postAuthor} . ${hashtags}`
+    const caption = makeCaption(redditPost)
 
     // console.log('caption', caption)
     

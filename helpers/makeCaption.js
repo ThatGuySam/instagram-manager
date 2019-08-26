@@ -1,67 +1,13 @@
-const postToInstagram = require('./ig/post')
-const postedMemes = require('./postedMemes')
+const makeHashtags = require('./makeHashtags')
+const convertLineBreaks = require('./convertLineBreaks')
 
-const maxLineSize = 47
+module.exports = function (redditPost) {
+    const postTitle = redditPost.data.title
+    const postAuthor = redditPost.data.author
+    const hashtags = makeHashtags()
 
-const padLine = function (line) {
-    return line.padEnd(maxLineSize, '⠀')
-}
+    // Put it all together
+    const caption = `${postTitle}. \r\rStolen from u/${postAuthor}. \r\r\r${hashtags}`
 
-module.exports = function (lines) {
-    const username = process.env.USERNAME
-    let captionLines = []
-
-    lines.forEach((initialLine, i) => {
-        const line = (i === 0) ? `${username} ${initialLine}` : initialLine
-        const length = line.length
-
-        if (line.length < maxLineSize) {
-            captionLines.push(line)
-        } else {
-            let currentLine = ''
-            const words = line.split(' ')
-
-            words.forEach((word, wi) => {
-                const isNotLastWord = (wi !== words.length-1)
-                const nextLine = currentLine += ` ${word}`
-                console.log(currentLine, currentLine.length, word, (currentLine.length < maxLineSize))
-
-                // If it's the first line just add the word without spaces
-                if (wi === 0) {
-                    currentLine = word
-                    return
-                }
-
-                // Is the currentLine 
-                if (nextLine.length < maxLineSize) {
-                    // Add word to line
-                    currentLine = nextLine
-
-                    if (isNotLastWord) return
-                }
-
-                // Push line and reset
-                captionLines.push(currentLine)
-
-                if (isNotLastWord) currentLine = ''
-            })
-
-
-
-
-            // lineParts.foreach(linePart => {
-            //     captionLines.push(padLine(linePart))
-            // })
-        }
-    })
-    
-    return captionLines.map((line, i) => {
-        const paddedLine = padLine(line.trim())
-
-        // Slice off username from first line
-        if (i === 0) return paddedLine.slice(username.length + 1)
-
-        // Other just return the line unchanged
-        return paddedLine
-    })
+    return convertLineBreaks(caption)
 }
