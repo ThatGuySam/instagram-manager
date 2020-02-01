@@ -13,7 +13,9 @@ module.exports =  async function (postName) {
         .then(res => data = res.data[0])
         .catch(console.log)
 
+    // console.log('data', data)
+
     const redditPost = data.data.children[0]
 
-    return getImageUrlFromRedditPost(redditPost)
+    return redditPost
 }

@@ -23,9 +23,7 @@ app.prepare().then(() => {
 
     const redditPost = redditPosts[0]
 
-    const memesPosted = Object.entries(postedMemes.getAll()).map(memeObject => {
-      return memeObject[1].data.title
-    })
+    const memesPosted = postedMemes.getNames()
 
     res.header('Content-Type','application/json')
     res.send(JSON.stringify(memesPosted, null, 4))
@@ -39,8 +37,23 @@ app.prepare().then(() => {
     console.log('-- Finished Posting')
   })
 
+  server.get('/clear-memes', (req, res) => {
+
+    postedMemes.clear()
+    
+    res.header('Content-Type','application/json')
+    res.send(JSON.stringify({
+      message: 'Memes cleared',
+      memesPosted: postedMemes.getNames()
+    }, null, 4))
+  })
+
   server.get('/post-mockup/:id', (req, res) => {
     return app.render(req, res, '/post-mockup', { id: req.params.id })
+  })
+
+  server.get('/post-preview/:id', (req, res) => {
+    return app.render(req, res, '/post-preview', { id: req.params.id })
   })
 
   server.get('*', (req, res) => {
