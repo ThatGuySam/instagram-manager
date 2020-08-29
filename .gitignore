@@ -76,3 +76,4 @@ cookies/*
 # Memes Folder
 static/memes/*
 !static/memes/.gitkeep 
+.vercel
