@@ -1,5 +1,4 @@
 {
-    "name": "instagram-manager",
     "version": 2,
     "env": {
         "USERNAME": "@igm-username",
