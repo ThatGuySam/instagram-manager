@@ -4,6 +4,8 @@ import axios from 'axios'
 
 const mql = require('@microlink/mql')
 
+const { postImage: makePostImageUrl } = require('../helpers/routes')
+
 
 export default async function (req, res) {
 
@@ -15,7 +17,7 @@ export default async function (req, res) {
 
         // This has to be a publicly accessible domain for mql
         const screenshotHost = process.env.SCREENSHOT_ENDPOINT || `https://${process.env.VERCEL_URL}`
-        const mockupUrl = `${screenshotHost}/post-mockup?id=${postId}`
+        const mockupUrl = screenshotHost + makePostImageUrl(postId)
 
         // console.log('screenshotHost', screenshotHost)
 
