@@ -1,22 +1,30 @@
 import React from 'react'
 import Link from 'next/link'
 
+
+const makePostImageUrl = require('../helpers/routes').postImage
+
+
+const links = [
+  makePostImageUrl('ieavqd'),
+  '/post-preview/ieavqd',
+  '/post-mockup/ieavqd',
+  '/post-image/ieavqd.jpg',
+  '/api/generate-post-image?id=ieavqd'
+]
+
 export default () => (
-  <ul>
-    <li>
-      <Link href='/b' as='/a'>
-        <a>a</a>
-      </Link>
-    </li>
-    <li>
-      <Link href='/a' as='/b'>
-        <a>b</a>
-      </Link>
-    </li>
-    <li>
-      <Link href={{ pathname: '/posts', query: { id: '2' } }} as='/posts/2'>
-        <a>post #2</a>
-      </Link>
-    </li>
+  <ul
+    style={{
+      background: 'white'
+    }}
+  >
+    {links.map( (link, index) => (
+      <li key={index}>
+        <a href={link}>
+          { link }
+        </a>
+      </li>
+    ))}
   </ul>
 )
