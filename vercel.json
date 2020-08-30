@@ -1,0 +1,15 @@
+{
+    "version": 2,
+    "routes": [
+        { "src": "/post-mockup/(?<id>[^/]+)$", "dest": "/post-mockup?id=$id" },
+        { "src": "/post-preview/(?<id>[^/]+)$", "dest": "/post-preview?id=$id" },
+        {
+            "src": "/post-image/(?<postId>[^/]*).jpg",
+            "headers": {"cache-control": "public, s-maxage=2419200, stale-while-revalidate"},
+            "dest": "/api/generate-post-image?id=$postId"
+        }
+    ],
+    "alias": [
+      "instagram-manager.now.sh"
+    ]
+}
