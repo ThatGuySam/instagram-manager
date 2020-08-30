@@ -1,4 +1,5 @@
 
 module.exports =  {
-    'postImage': (postId) => `/post-mockup?id=${postId}`
+    'postImage': (postId) => `/post-image/${postId}.png`,
+    'postMockup': (postId) => `/post-mockup?id=${postId}`,
 }
