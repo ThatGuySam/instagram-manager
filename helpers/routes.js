@@ -1,3 +1,4 @@
+
 module.exports =  {
-    'postImage': (postId) => `${process.env.SCREENSHOT_ENDPOINT}${postId}.jpg?quality=100`
+    'postImage': (postId) => `/post-mockup?id=${postId}`
 }
