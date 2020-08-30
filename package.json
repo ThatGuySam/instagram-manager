@@ -2,6 +2,7 @@
   "name": "instagram-manager",
   "version": "1.0.0",
   "scripts": {
+    "vercel-dev": "vercel dev",
     "dev": "node server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js"
