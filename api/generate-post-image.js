@@ -1,8 +1,7 @@
 // URL utility
 import url from 'url'
 import axios from 'axios'
-
-const mql = require('@microlink/mql')
+import mql from '@microlink/mql'
 
 const { postImage: makePostImageUrl } = require('../helpers/routes')
 
