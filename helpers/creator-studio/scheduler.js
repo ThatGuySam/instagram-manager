@@ -213,6 +213,9 @@ export default class InstagramScheduler {
         `document.querySelector('body').innerText.includes('Your draft has been saved.')`
       )
 
+
+      await post.callback()
+
       /* Click schedule post button */
       // let schedulePostButton = (await this.page.$$('div[role="checkbox"]'))[1];
       // await schedulePostButton.click();
