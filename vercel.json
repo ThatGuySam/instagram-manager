@@ -12,6 +12,11 @@
             "src": "/post-image/(?<postId>[^/]*).png",
             "headers": {"cache-control": "public, s-maxage=2419200, stale-while-revalidate"},
             "dest": "/api/generate-post-image?id=$postId"
+        },
+        {
+            "src": "/post-details/(?<postId>[^/]*).json",
+            "headers": {"cache-control": "public, s-maxage=2419200, stale-while-revalidate"},
+            "dest": "/api/generate-post-details?id=$postId"
         }
     ],
     "alias": [

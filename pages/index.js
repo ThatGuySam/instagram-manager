@@ -10,7 +10,9 @@ const links = [
   '/post-preview/ieavqd',
   '/post-mockup/ieavqd',
   '/post-image/ieavqd.jpg',
-  '/api/generate-post-image?id=ieavqd'
+  '/api/generate-post-image?id=ieavqd',
+  '/post-details/ieavqd.json',
+  '/api/generate-post-details?id=ieavqd'
 ]
 
 export default () => (
