@@ -2,6 +2,7 @@
 // import url from 'url'
 import fs from 'fs'
 import axios from 'axios'
+import Airtable from 'airtable'
 
 import InstagramScheduler from '../helpers/creator-studio/scheduler'
 import { getPost } from './generate-post-details'
@@ -12,15 +13,15 @@ import { getPost } from './generate-post-details'
 // const makeCaption = require('../helpers/makeCaption')
 
 
+Airtable.configure({
+    endpointUrl: 'https://api.airtable.com',
+    apiKey: process.env.AIRTABLE_API_KEY
+});
+
+const base = Airtable.base(process.env.AIRTABLE_BASE)
+
 const draftRecord = (recordId) => {
-    const Airtable = require('airtable');
-
-    Airtable.configure({
-        endpointUrl: 'https://api.airtable.com',
-        apiKey: process.env.AIRTABLE_API_KEY
-    });
-
-    const base = Airtable.base(process.env.AIRTABLE_BASE)
+    // const Airtable = require('airtable');
 
     base('All Posts').update([
         {
@@ -35,15 +36,6 @@ const draftRecord = (recordId) => {
 
 const getQeuedPosts = () => new Promise((resolve, reject) => {
     // Get posts from Airtable
-
-    const Airtable = require('airtable');
-
-    Airtable.configure({
-        endpointUrl: 'https://api.airtable.com',
-        apiKey: process.env.AIRTABLE_API_KEY
-    });
-
-    const base = Airtable.base(process.env.AIRTABLE_BASE)
 
     let posts = []
 
