@@ -12,6 +12,27 @@ import { getPost } from './generate-post-details'
 // const makeCaption = require('../helpers/makeCaption')
 
 
+const draftRecord = (recordId) => {
+    const Airtable = require('airtable');
+
+    Airtable.configure({
+        endpointUrl: 'https://api.airtable.com',
+        apiKey: process.env.AIRTABLE_API_KEY
+    });
+
+    const base = Airtable.base(process.env.AIRTABLE_BASE)
+
+    base('All Posts').update([
+        {
+          "id": recordId,
+          "fields": {
+            "Status": "Drafted"
+          }
+        }
+      ])
+}
+
+
 const getQeuedPosts = () => new Promise((resolve, reject) => {
     // Get posts from Airtable
 
@@ -37,7 +58,11 @@ const getQeuedPosts = () => new Promise((resolve, reject) => {
         // This function (`page`) will get called for each page of records.
     
         records.forEach(function(record) {
-            posts.push(record.get('Reddit Post ID'))
+
+            posts.push({
+                airtableId: record.id,
+                redditId: record.get('Reddit Post ID')
+            })
 
             // console.log('Retrieved', record.get('Reddit Post ID'));
         })
@@ -74,45 +99,32 @@ export default async function (req, res) {
         const postIds = await getQeuedPosts()
 
 
-        for (const postId of postIds) {
+        for (const post of postIds) {
 
-            console.log(`Fetching data for ${postId} from Reddit`)
+            console.log(`Fetching data for ${post.redditId} from Reddit`)
 
-            const postData = await getPost(postId)
+            const postData = await getPost(post.redditId)
 
-            // const response = await axios({
-            //     method: 'get',
-            //     url: `https://instagram-manager.now.sh/post-image/${postId}.png`,
-            //     responseType: "stream"
-            // })
+            console.log('post.airtableId', post.airtableId)
 
-            // console.log(`Downloading ${postId} image to filesystem`)
-
-            // const downloadStream = response.data.pipe(fs.createWriteStream(`/tmp/${postId}.png`))
-
-            // Wait for download tot finish
-            // await new Promise(fulfill => downloadStream.on('finish', fulfill))
-
-            posts.push(postData)
+            posts.push({
+                airtableId: post.airtableId,
+                ...postData
+            })
         }
 
 
-        // axios.all(posts.map(post => {
-
-        // }))
-
-
-        Promise.all(postIds.map(postId => {
-            console.log(`Requesting image for ${postId}`)
+        Promise.all(postIds.map(({ redditId }) => {
+            console.log(`Requesting image for ${redditId}`)
             return axios({
                 method: 'get',
-                url: `https://instagram-manager.now.sh/post-image/${postId}.png`,
+                url: `https://instagram-manager.now.sh/post-image/${redditId}.png`,
                 responseType: "stream"
             }).then(response => {
 
-                console.log(`Downloading ${postId} image to filesystem`)
+                console.log(`Downloading ${redditId} image to filesystem`)
 
-                const downloadStream = response.data.pipe(fs.createWriteStream(`/tmp/${postId}.png`))
+                const downloadStream = response.data.pipe(fs.createWriteStream(`/tmp/${redditId}.png`))
 
                 return new Promise(fulfill => downloadStream.on('finish', fulfill))
             })
@@ -132,6 +144,9 @@ export default async function (req, res) {
                 release: {
                     date: "31.08.2020",
                     time: "07:12"
+                },
+                callback: async function () {
+                    draftRecord(post.airtableId)
                 }
             }
         }))
