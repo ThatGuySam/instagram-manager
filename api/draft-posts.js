@@ -62,7 +62,7 @@ const getQeuedPosts = () => new Promise((resolve, reject) => {
 
 
 export default async function (req, res) {
-https://instagram-manager.now.sh/post-details/ieavqd.json
+
     try {
         // const { query } = url.parse(req.url, true)
 
