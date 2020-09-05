@@ -6,6 +6,8 @@ export default class InstagramScheduler {
     this.password = password;
     this.multipleAccounts = multipleAccounts;
 
+    this.typingDelay = 40
+
     this.loggedIn = false
   }
 
@@ -82,8 +84,8 @@ export default class InstagramScheduler {
 
     console.log('Entering login data')
 
-    await this.page.type('input[name="email"]', this.email, { delay: 128 });
-    await this.page.type('input[name="pass"]', this.password, { delay: 128 });
+    await this.page.type('input[name="email"]', this.email, { delay: this.typingDelay });
+    await this.page.type('input[name="pass"]', this.password, { delay: this.typingDelay });
 
     console.log('Clicking "Log In" button')
 
@@ -169,7 +171,7 @@ export default class InstagramScheduler {
 
       /* Add description */
       let descriptionInput = await this.page.$('div[aria-autocomplete="list"]');
-      await descriptionInput.type(post.description, { delay: 128 });
+      await descriptionInput.type(post.description, { delay: this.typingDelay });
 
       /* Add image file */
       const addContentButton = (await this.page.$x("//span[contains(text(), 'Add Content')]"))[1]
@@ -220,7 +222,7 @@ export default class InstagramScheduler {
 
       // /* Add release date */
       // let dateInput = await this.page.$('input[placeholder="tt.mm.jjjj"]');
-      // await dateInput.type(post.release.date, { delay: 128 });
+      // await dateInput.type(post.release.date, { delay: this.typingDelay });
       // await this.page.waitFor(500);
 
       // /* Add release time */
@@ -229,10 +231,10 @@ export default class InstagramScheduler {
       // let hourInput = timeInput[0];
       // let minuteInput = timeInput[1];
 
-      // await hourInput.type(releaseTime[0], { delay: 128 });
+      // await hourInput.type(releaseTime[0], { delay: this.typingDelay });
       // await this.page.waitFor(500);
 
-      // await minuteInput.type(releaseTime[1], { delay: 128 });
+      // await minuteInput.type(releaseTime[1], { delay: this.typingDelay });
       // await this.page.waitFor(500);
 
       // /* Click publish button */
