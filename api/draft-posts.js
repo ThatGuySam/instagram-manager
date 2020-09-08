@@ -20,14 +20,14 @@ Airtable.configure({
 
 const base = Airtable.base(process.env.AIRTABLE_BASE)
 
-const draftRecord = (recordId) => {
+const updateRecordStatus = (recordId, newStatus) => {
     // const Airtable = require('airtable');
 
     base('All Posts').update([
         {
           "id": recordId,
           "fields": {
-            "Status": "Drafted"
+            "Status": newStatus
           }
         }
       ])
@@ -53,7 +53,9 @@ const getQeuedPosts = () => new Promise((resolve, reject) => {
 
             posts.push({
                 airtableId: record.id,
-                redditId: record.get('Reddit Post ID')
+                redditId: record.get('Reddit Post ID'),
+                postDate: new Date(record.get('Post Date')),
+                postDateString: record.get('Post Date')
             })
 
             // console.log('Retrieved', record.get('Reddit Post ID'));
@@ -97,10 +99,8 @@ export default async function (req, res) {
 
             const postData = await getPost(post.redditId)
 
-            console.log('post.airtableId', post.airtableId)
-
             posts.push({
-                airtableId: post.airtableId,
+                ...post,
                 ...postData
             })
         }
@@ -126,19 +126,28 @@ export default async function (req, res) {
 
         console.log('scheduler', scheduler)
 
-        console.log('Drafting posts')
+        console.log('Scheduling posts')
 
-        await scheduler.schedulePosts([posts[0], posts[1]].map(post => {
+        await scheduler.schedulePosts(posts.map(post => {
+
+            const [ year, month, day ] = post.postDateString.split('-')
+
+            const formattedDate = `${month}/${day}/${year}`
+
+            console.log('formattedDate', formattedDate)
+            console.log('postDateString', post.postDateString)
+
+
             return {
                 account: 'stolendankchristianmemes',
                 description: post.caption,
                 file: `/tmp/${post.id}.png`,
                 release: {
-                    date: "31.08.2020",
-                    time: "07:12"
+                    date: formattedDate,//"9/12/2020",
+                    time: "07:12:AM"
                 },
                 callback: async function () {
-                    draftRecord(post.airtableId)
+                    updateRecordStatus(post.airtableId, 'Scheduled')
                 }
             }
         }))
