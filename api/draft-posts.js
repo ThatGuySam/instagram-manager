@@ -39,13 +39,21 @@ const getQeuedPosts = () => new Promise((resolve, reject) => {
 
     let posts = []
 
+    // Formulas
+    const isQeued = 'Status = "Qeued"'
+    const hasPostDate = 'NOT({Post Date} = "")'
+
+    // Sorts
+    const earliestPostDatesFirst = { field: "Post Date", direction: "asc" }
+
 
     base('All Posts').select({
         // Selecting the first 3 records in Grid view:
         // maxRecords: 3,
         view: 'Grid view',
-        fields: ['Reddit Post ID'],
-        filterByFormula: 'Status = "Qeued"'
+        fields: ['Reddit Post ID', 'Post Date'],
+        filterByFormula: `AND( ${isQeued}, ${hasPostDate} )`,
+        sort: [ earliestPostDatesFirst ]
     }).eachPage(function page(records, fetchNextPage) {
         // This function (`page`) will get called for each page of records.
     
