@@ -122,14 +122,17 @@ export default async function (req, res) {
 
 
         Promise.all(postIds.map(({ redditId }) => {
-            console.log(`Requesting image for ${redditId}`)
+            const postMockupURL = `https://instagram-manager.now.sh/post-image/${redditId}.png`
+
+            console.log(`Requesting image ${postMockupURL}`)
+
             return axios({
                 method: 'get',
-                url: `https://instagram-manager.now.sh/post-image/${redditId}.png`,
+                url: postMockupURL,
                 responseType: "stream"
             }).then(response => {
 
-                console.log(`Downloading ${redditId} image to filesystem`)
+                console.log(`Downloading ${postMockupURL} image to filesystem`)
 
                 const downloadStream = response.data.pipe(fs.createWriteStream(`/tmp/${redditId}.png`))
 
