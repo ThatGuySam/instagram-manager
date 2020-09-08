@@ -93,6 +93,13 @@ export default async function (req, res) {
         const postIds = await getQeuedPosts()
 
 
+        // If there were no posts found 
+        // then stop
+        if (postIds.length === 0) {
+            throw new Error('No posts found')
+        }
+
+
         for (const post of postIds) {
 
             console.log(`Fetching data for ${post.redditId} from Reddit`)
