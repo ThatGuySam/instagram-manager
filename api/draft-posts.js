@@ -34,6 +34,9 @@ const updateRecordStatus = (recordId, newStatus) => {
 }
 
 
+const priorityMessage = ( message ) => console.log('\n\n******\n\n', message, '\n\n******\n\n')
+
+
 const getQeuedPosts = () => new Promise((resolve, reject) => {
     // Get posts from Airtable
 
@@ -89,6 +92,8 @@ const getQeuedPosts = () => new Promise((resolve, reject) => {
 
 
 export default async function (req, res) {
+
+    priorityMessage('🔥 Starting up... 🔥')
 
     try {
         // const { query } = url.parse(req.url, true)
@@ -170,6 +175,8 @@ export default async function (req, res) {
             }
         }))
 
+        priorityMessage('✅ All finished!')
+
         // Set Cors Headers to allow all origins so data can be requested by a browser
         // res.setHeader("Access-Control-Allow-Origin", "*");
         // res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -181,9 +188,11 @@ export default async function (req, res) {
         return
 
     } catch (e) {
-        res.statusCode = 500;
-        res.setHeader('Content-Type', 'text/html');
-        res.end('<h1>Server Error</h1><p>Sorry, there was a problem</p>');
-        console.error('500 Error', e.message);
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'text/html')
+        res.end('<h1>Server Error</h1><p>Sorry, there was a problem</p>')
+        console.error('500 Error', e.message)
+
+        priorityMessage('🚫 Whoops, there was a problem.')
     }
 }
