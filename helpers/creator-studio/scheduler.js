@@ -6,6 +6,8 @@ export default class InstagramScheduler {
     this.password = password;
     this.multipleAccounts = multipleAccounts;
 
+    this.typingDelay = 40
+
     this.loggedIn = false
   }
 
@@ -33,6 +35,31 @@ export default class InstagramScheduler {
     });
 
     await this.page.waitFor(500);
+
+  }
+
+  async draftPost () {
+
+    await this.page.waitForXPath(
+      '//span[contains(text(), "Save as Draft")]'
+    );
+    await this.page.waitFor(500);
+
+    // Click Save as draft option
+    const dropdownOptions = await this.page.$$('.uiContextualLayer [role="checkbox"]')
+    const saveAsDraftCheckbox = dropdownOptions[2]
+
+    await saveAsDraftCheckbox.click()
+
+    await this.mapElements()
+
+    const saveAsDraftButton = await this.page.$('button.save-as-draft')
+
+    await saveAsDraftButton.click()
+
+    await this.page.waitForFunction(
+      `document.querySelector('body').innerText.includes('Your draft has been saved.')`
+    )
 
   }
 
@@ -82,8 +109,8 @@ export default class InstagramScheduler {
 
     console.log('Entering login data')
 
-    await this.page.type('input[name="email"]', this.email, { delay: 128 });
-    await this.page.type('input[name="pass"]', this.password, { delay: 128 });
+    await this.page.type('input[name="email"]', this.email, { delay: this.typingDelay });
+    await this.page.type('input[name="pass"]', this.password, { delay: this.typingDelay });
 
     console.log('Clicking "Log In" button')
 
@@ -169,7 +196,7 @@ export default class InstagramScheduler {
 
       /* Add description */
       let descriptionInput = await this.page.$('div[aria-autocomplete="list"]');
-      await descriptionInput.type(post.description, { delay: 128 });
+      await descriptionInput.type(post.description, { delay: this.typingDelay });
 
       /* Add image file */
       const addContentButton = (await this.page.$x("//span[contains(text(), 'Add Content')]"))[1]
@@ -190,59 +217,51 @@ export default class InstagramScheduler {
       const arrowButton = await this.page.$('button.dropdownbutton')
       await arrowButton.click();
 
-      await this.page.waitForXPath(
-        '//span[contains(text(), "Save as Draft")]'
-      );
-      await this.page.waitFor(500);
-
       // Click Save as draft option
       const dropdownOptions = await this.page.$$('.uiContextualLayer [role="checkbox"]')
-      const saveAsDraftCheckbox = dropdownOptions[2]
+      const scheduleCheckbox = dropdownOptions[1]
 
-      await saveAsDraftCheckbox.click()
+      await scheduleCheckbox.click()
 
       await this.mapElements()
 
-      const saveAsDraftButton = await this.page.$('button.save-as-draft')
+      await this.page.waitFor('input[placeholder="mm/dd/yyyy"]');
 
-      await saveAsDraftButton.click()
+      /* Add release date */
+      let dateInput = await this.page.$('input[placeholder="mm/dd/yyyy"]');
+      await dateInput.type(post.release.date, { delay: this.typingDelay });
+      await this.page.waitFor(500);
+
+      /* Add release time */
+      let releaseTime = post.release.time.split(":");
+      let timeInput = await this.page.$$('input[role="spinbutton"]');
+      let hourInput = timeInput[0];
+      let minuteInput = timeInput[1];
+      let periodInput = timeInput[2];
+
+      await hourInput.type(releaseTime[0], { delay: this.typingDelay });
+      await this.page.waitFor(500);
+
+      await minuteInput.type(releaseTime[1], { delay: this.typingDelay });
+      await this.page.waitFor(500);
+
+      await periodInput.type(releaseTime[2], { delay: this.typingDelay });
+      await this.page.waitFor(500);
+
+      /* Click publish button */
+      const publishButton = await this.page.$(
+        'button.schedule'
+      );
+      await publishButton.click();
+
+      // await this.mapElements()
 
       await this.page.waitForFunction(
-        `document.querySelector('body').innerText.includes('Your draft has been saved.')`
+        `document.querySelector('body').innerText.includes('Your post has been successfully scheduled.')`
       )
 
-      /* Click schedule post button */
-      // let schedulePostButton = (await this.page.$$('div[role="checkbox"]'))[1];
-      // await schedulePostButton.click();
-      // await this.page.waitFor(500);
 
-      // await this.page.waitFor('input[placeholder="tt.mm.jjjj"]');
-
-      // /* Add release date */
-      // let dateInput = await this.page.$('input[placeholder="tt.mm.jjjj"]');
-      // await dateInput.type(post.release.date, { delay: 128 });
-      // await this.page.waitFor(500);
-
-      // /* Add release time */
-      // let releaseTime = post.release.time.split(":");
-      // let timeInput = await this.page.$$('input[role="spinbutton"]');
-      // let hourInput = timeInput[0];
-      // let minuteInput = timeInput[1];
-
-      // await hourInput.type(releaseTime[0], { delay: 128 });
-      // await this.page.waitFor(500);
-
-      // await minuteInput.type(releaseTime[1], { delay: 128 });
-      // await this.page.waitFor(500);
-
-      // /* Click publish button */
-      // let publishButton = await this.page.$(
-      //   'button[data-testid="publish_button"]'
-      // );
-      // await publishButton.click();
-
-      // await this.page.waitFor(10000);
-      // await this.page.waitForNavigation({ waitUntil: "networkidle2" });
+      await post.callback()
     }
   }
 

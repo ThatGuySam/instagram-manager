@@ -45,7 +45,7 @@ module.exports = function () {
         ...randomMemeHashtags
     ]
 
-    if (isDev) return combinedHashtags.join(' ')
+    // if (isDev) return combinedHashtags.join(' ')
 
     return combinedHashtags.map(hashtag => `#${hashtag}`).join(' ')
 }
