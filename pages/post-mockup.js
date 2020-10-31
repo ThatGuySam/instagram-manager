@@ -58,7 +58,7 @@ export default class extends Component {
               }}
             />
           </div>
-          <img src='/static/reddit-banner.png' className='img-fluid align-self-end w-100 px-4' />
+          <img src='/static/reddit-banner-save.png' className='img-fluid align-self-end w-100 px-4' />
         </div>
       </div>
     )
