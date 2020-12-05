@@ -98,7 +98,7 @@ export default class InstagramScheduler {
 
     console.log('Clicking "Log In or Sign Up" button')
 
-    let loginButton = await this.page.$('[data-hover="tooltip"]');
+    let loginButton = (await this.page.$$('[role="button"]'))[0];
     await loginButton.click();
 
     // Wait for login page to load
