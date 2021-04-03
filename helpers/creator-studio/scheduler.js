@@ -1,5 +1,16 @@
 const puppeteer = require('puppeteer');
 
+
+
+const createButtonSelector = '[selector-create-post], .create-post'
+const createButtonXPath = "//div[ contains(., 'Create Post') and @role='button' ]"
+
+
+function sleep( time ) {
+  return new Promise(r => setTimeout(r, time))
+}
+
+
 export default class InstagramScheduler {
   constructor(email = "", password = "", multipleAccounts = false) {
     this.email = email;
@@ -11,14 +22,39 @@ export default class InstagramScheduler {
     this.loggedIn = false
   }
 
+  async findAndClick ( friendlyName, reference ) {
+    const isXPath = reference.startsWith('//')
+    // const referenceType = isXPath ? 'xpath' : 'selector'
+
+    console.log(`Looking for ${friendlyName} as ${reference}`)
+
+    await this.page.waitFor( reference )
+    const matchingElements = isXPath ? await this.page.$x( reference ) : await this.page.$$( reference )
+
+    console.log(`Found ${matchingElements.length} ${friendlyName} as ${reference}`)
+
+    // Get elements matching reference
+    const [ element ] = matchingElements
+
+    console.log(`Clicking ${friendlyName} as ${reference}`)
+
+    await element.click()
+
+    console.log('\n\n')
+
+    return element
+  }
+
 
   async mapElements () {
 
     // Map all js elements with new class names
-    await this.page.evaluate(_ => {
+    const mappedElementsJson = await this.page.evaluate(_ => {
       // Page context
 
-      [...document.querySelectorAll('*[id^="js"], button, [role="button"]')].forEach(element => {
+      const mappedElements = {};
+
+      [ ...document.querySelectorAll('*[id^="js"], button, [role="button"]') ].forEach(element => {
           const slug = element.innerText.toLowerCase()
               .replace(/[^\w ]+/g,'')
               .replace(/ +/g,'-')
@@ -29,13 +65,38 @@ export default class InstagramScheduler {
           if (slug.length === 0) return
       
           element.classList.add(slug)
+
+          element.setAttribute(`selector-${slug}`, true)
+
+          const {
+            className,
+            classList,
+            attributes
+          } = element
+
+          const elementAtributes = Object.fromEntries( Object.values(attributes).map( attributeName => [attributeName, element[attributeName]]) )
+
+          mappedElements[element.innerText] = {
+            ...elementAtributes,
+            className,
+            classList,
+            attributes
+          }
       })
 
-      // Page context
+      console.log('mappedElements during evaluate', mappedElements)
+
+      // TODO: Return mapped elements
+      return JSON.stringify( mappedElements )
+
+      // End page context
     });
+
+    // console.log('mappedElementsJson after evaluate', mappedElementsJson)
 
     await this.page.waitFor(500);
 
+    return JSON.parse( mappedElementsJson )
   }
 
   async draftPost () {
@@ -96,10 +157,12 @@ export default class InstagramScheduler {
     });
 
 
-    console.log('Clicking "Log In or Sign Up" button')
+    // console.log('Clicking "Log In or Sign Up" button')
 
-    let loginButton = (await this.page.$$('[role="button"]'))[0];
-    await loginButton.click();
+    // let loginButton = (await this.page.$$('[role="button"]'))[0];
+    // await loginButton.click();
+
+    await this.findAndClick( '"Log In or Sign Up"', '[role="button"]' )
 
     // Wait for login page to load
     await this.page.waitForNavigation({ waitUntil: "networkidle2" });
@@ -114,8 +177,10 @@ export default class InstagramScheduler {
 
     console.log('Clicking "Log In" button')
 
-    loginButton = await this.page.$('button[name="login"]');
-    await loginButton.click();
+    await this.findAndClick( '"Log In Button"', 'button[name="login"]' )
+
+    // loginButton = await this.page.$('button[name="login"]');
+    // await loginButton.click();
 
 
     console.log('Waiting for login response')
@@ -127,44 +192,29 @@ export default class InstagramScheduler {
 
   async schedulePosts(posts) {
 
-
-    const createButtonSelector = '#mediaManagerLeftNavigation [role="button"]'
-
     await this.initPuppeteer()
 
     await this.login()
 
     console.log('this.page.url()', this.page.url())
 
-    
-    console.log('Clicking on Instagram tab')
+    const instagramTabSelector = 'div[id="media_manager_chrome_bar_instagram_icon"]'
 
-    let instagramButton = await this.page.$(
-      'div[id="media_manager_chrome_bar_instagram_icon"]'
-    );
-    await instagramButton.click();
+    await this.findAndClick( 'Instagram Tab Button', instagramTabSelector )
 
     await this.page.waitForNavigation({ waitUntil: "networkidle2" });
 
-
-    console.log('Looking for create button')
-
-    await this.page.waitFor(createButtonSelector);
-    await this.page.waitFor(500);
-
-    console.log('Found create button')
+    // Wait for react to render dom
+    await sleep( 500 )
 
     for (let post of posts) {
 
-      /* Click on "Create post" button */
-      let createPostButton = await this.page.$(
-        createButtonSelector
-      );
-      
-      // await page.$x("//div[contains(text(), 'Create Post')]")
-      
-      
-      await createPostButton.click();
+      // Map elements so Create Post button is findable
+      await this.mapElements()
+
+      await this.page.waitFor(500);
+
+      await this.findAndClick( 'Create Post Button', createButtonXPath )
 
       // Wait dropdown to open
       await this.page.waitFor(500);
