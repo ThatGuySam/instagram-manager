@@ -24,5 +24,8 @@
     "react-dom": "^16.13.1",
     "tough-cookie-filestore2": "^1.0.0",
     "url-parse": "^1.4.7"
+  },
+  "devDependencies": {
+    "vercel": "^21.0.1"
   }
 }
