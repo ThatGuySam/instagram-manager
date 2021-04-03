@@ -31,12 +31,12 @@ export default class InstagramScheduler {
     await this.page.waitFor( reference )
     const matchingElements = isXPath ? await this.page.$x( reference ) : await this.page.$$( reference )
 
-    console.log(`Found ${matchingElements.length} ${friendlyName} as ${reference}`)
+    console.log(`Found ${matchingElements.length} ${friendlyName} with ${reference}`)
 
     // Get elements matching reference
     const [ element ] = matchingElements
 
-    console.log(`Clicking ${friendlyName} as ${reference}`)
+    console.log(`Clicking ${friendlyName} with ${reference}`)
 
     await element.click()
 
