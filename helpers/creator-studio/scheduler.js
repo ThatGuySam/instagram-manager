@@ -3,7 +3,8 @@ const puppeteer = require('puppeteer');
 
 
 const createButtonSelector = '[selector-create-post], .create-post'
-const createButtonXPath = "//div[ contains(., 'Create Post') and @role='button' ]"
+const createNewButtonXPath = "//div[ contains(., 'Create New') and @role='button' ]"
+const createPostButtonXPath = "//div[ contains(., 'Create Post') and @role='button' ]"
 
 
 function sleep( time ) {
@@ -214,7 +215,7 @@ export default class InstagramScheduler {
 
       await this.page.waitFor(500);
 
-      await this.findAndClick( 'Create Post Button', createButtonXPath )
+      await this.findAndClick( 'Create New Button', createPostButtonXPath )
 
       // Wait dropdown to open
       await this.page.waitFor(500);
