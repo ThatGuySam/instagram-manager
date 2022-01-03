@@ -2,6 +2,8 @@
 // import url from 'url'
 import fs from 'fs'
 import axios from 'axios'
+// https://github.com/softonic/axios-retry
+import axiosRetry from 'axios-retry'
 import Airtable from 'airtable'
 
 import InstagramScheduler from '../helpers/creator-studio/scheduler'
@@ -12,6 +14,16 @@ import { getPost } from './generate-post-details'
 // const getRedditPost = require('../helpers/getRedditPost')
 // const makeCaption = require('../helpers/makeCaption')
 
+
+
+// Static variables
+
+const airtableViewName = 'Default'
+
+const mockupFunctionHost = 'instagram-manager.vercel.app'
+
+
+// Config
 
 Airtable.configure({
     endpointUrl: 'https://api.airtable.com',
@@ -34,6 +46,22 @@ const updateRecordStatus = (recordId, newStatus) => {
 }
 
 
+// Configure axiosRetry
+// https://stackoverflow.com/a/64076585/1397641
+
+axiosRetry(axios, {
+    retries: 5, // number of retries
+    retryDelay: (retryCount) => {
+      console.log(`retry attempt: ${retryCount}`);
+      return retryCount * 2000; // time interval between retries
+    },
+    // retryCondition: (error) => {
+    //   // if retry condition is not specified, by default idempotent requests are retried
+    //   return error.response.status === 503;
+    // },
+})
+
+
 const priorityMessage = ( message ) => console.log('\n\n******\n\n', message, '\n\n******\n\n')
 
 
@@ -53,7 +81,7 @@ const getQeuedPosts = () => new Promise((resolve, reject) => {
     base('All Posts').select({
         // Selecting the first 3 records in Grid view:
         // maxRecords: 3,
-        view: 'Grid view',
+        view: airtableViewName,
         fields: ['Reddit Post ID', 'Post Date'],
         filterByFormula: `AND( ${isQeued}, ${hasPostDate} )`,
         sort: [ earliestPostDatesFirst ]
@@ -127,13 +155,14 @@ export default async function (req, res) {
 
 
         Promise.all(postIds.map(({ redditId }) => {
-            const postMockupURL = `https://instagram-manager.now.sh/post-image/${redditId}.png`
+            const postMockupURL = `https://${mockupFunctionHost}/post-image/${redditId}.png`
 
             console.log(`Requesting image ${postMockupURL}`)
 
             return axios({
                 method: 'get',
                 url: postMockupURL,
+                timeout: 0,// 0 is no timeout
                 responseType: "stream"
             }).then(response => {
 
