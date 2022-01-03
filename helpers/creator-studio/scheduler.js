@@ -155,7 +155,7 @@ export default class InstagramScheduler {
 
     await this.page.goto("https://www.facebook.com/creatorstudio/", {
       waitUntil: "networkidle2"
-    });
+    })
 
 
     // console.log('Clicking "Log In or Sign Up" button')
