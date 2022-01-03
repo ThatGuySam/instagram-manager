@@ -4,7 +4,7 @@ const defaultPupperteerTimeout = 0
 
 const createButtonSelector = '[selector-create-post], .create-post'
 const createNewButtonXPath = "//div[ contains(., 'Create New') and @role='button' ]"
-const createPostButtonXPath = "//div[ contains(., 'Create Post') and @role='button' ]"
+const createPostButtonXPath = "//div[ contains(., 'Create post') and @role='button' ]"
 
 
 function sleep( time ) {
