@@ -95,7 +95,7 @@ export default class InstagramScheduler {
 
     // console.log('mappedElementsJson after evaluate', mappedElementsJson)
 
-    await this.page.waitFor(500);
+    await sleep( 500 )
 
     return JSON.parse( mappedElementsJson )
   }
@@ -104,8 +104,9 @@ export default class InstagramScheduler {
 
     await this.page.waitForXPath(
       '//span[contains(text(), "Save as Draft")]'
-    );
-    await this.page.waitFor(500);
+    )
+
+    await sleep( 500 )
 
     // Click Save as draft option
     const dropdownOptions = await this.page.$$('.uiContextualLayer [role="checkbox"]')
@@ -222,19 +223,19 @@ export default class InstagramScheduler {
       // Map elements so Create Post button is findable
       await this.mapElements()
 
-      await this.page.waitFor(500);
+      await sleep( 500 )
 
       await this.findAndClick( 'Create New Button', createPostButtonXPath )
 
       // Wait dropdown to open
-      await this.page.waitFor(500);
+      await sleep( 500 )
 
       const instagramFeedButton = (await this.page.$x("//strong[contains(text(), 'Instagram Feed')]"))[0]
       await instagramFeedButton.click();
 
       if (this.multipleAccounts) {
         await this.page.waitForXPath("/html/body/div[5]/div/div/div[3]");
-        await this.page.waitFor(500);
+        await sleep( 500 )
 
         /* Select instagram account */
         let accounts = (
@@ -249,7 +250,7 @@ export default class InstagramScheduler {
       }
 
       await this.page.waitFor('div[aria-autocomplete="list"]');
-      await this.page.waitFor(500);
+      await sleep( 500 )
 
 
       await this.mapElements()
@@ -266,7 +267,7 @@ export default class InstagramScheduler {
       await addContentButton.click();
 
       await this.page.waitFor('input[accept="video/*, image/*"]');
-      await this.page.waitFor(500);
+      await sleep( 500 )
 
       let fileInput = await this.page.$('input[accept="video/*, image/*"]');
       await fileInput.uploadFile(post.file);
@@ -290,7 +291,7 @@ export default class InstagramScheduler {
       /* Add release date */
       let dateInput = await this.page.$('input[placeholder="mm/dd/yyyy"]');
       await dateInput.type(post.release.date, { delay: this.typingDelay });
-      await this.page.waitFor(500);
+      await sleep( 500 )
 
       /* Add release time */
       let releaseTime = post.release.time.split(":");
@@ -300,13 +301,13 @@ export default class InstagramScheduler {
       let periodInput = timeInput[2];
 
       await hourInput.type(releaseTime[0], { delay: this.typingDelay });
-      await this.page.waitFor(500);
+      await sleep( 500 )
 
       await minuteInput.type(releaseTime[1], { delay: this.typingDelay });
-      await this.page.waitFor(500);
+      await sleep( 500 )
 
       await periodInput.type(releaseTime[2], { delay: this.typingDelay });
-      await this.page.waitFor(500);
+      await sleep( 500 )
 
       /* Click publish button */
       const publishButton = await this.page.$(
