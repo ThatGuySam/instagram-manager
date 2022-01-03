@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-
+const defaultPupperteerTimeout = 0
 
 const createButtonSelector = '[selector-create-post], .create-post'
 const createNewButtonXPath = "//div[ contains(., 'Create New') and @role='button' ]"
@@ -125,7 +125,7 @@ export default class InstagramScheduler {
 
   }
 
-  async initPuppeteer() {
+  async initPuppeteer () {
     if (this.page) {
       console.log('Puppeteer already initialized')
     }
@@ -135,9 +135,18 @@ export default class InstagramScheduler {
     this.browser = await puppeteer.launch({
       headless: false,
       args: [`--lang=en-GB`]
-    });
+    })
 
-    this.page = await this.browser.newPage();
+    this.page = await this.browser.newPage()
+
+    // Set page timeout
+    // https://pptr.dev/#?product=Puppeteer&show=api-pagesetdefaulttimeouttimeout
+    this.page.setDefaultTimeout( defaultPupperteerTimeout )
+
+    // Set navigattion timeout
+    // Overrides setDefaultTimeout
+    // https://pptr.dev/#?product=Puppeteer&show=api-pagesetdefaultnavigationtimeouttimeout
+    // this.page.setDefaultNavigationTimeout( defaultPupperteerTimeout )
 
     await this.page.setViewport({
       width: 1680,
