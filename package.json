@@ -27,6 +27,6 @@
     "url-parse": "^1.4.7"
   },
   "devDependencies": {
-    "vercel": "^21.0.1"
+    "vercel": "latest"
   }
 }
