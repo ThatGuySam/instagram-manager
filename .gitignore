@@ -76,3 +76,4 @@ cookies/*
 static/memes/*
 !static/memes/.gitkeep 
 .vercel
+/.vscode/snipsnap.code-snippets
