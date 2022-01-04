@@ -74,9 +74,12 @@ export default class InstagramScheduler {
 
     console.log(`Looking for ${friendlyName} as ${reference}`)
 
-    await this.page.waitFor( reference )
-    // waitForSelector
-    // waitForXPath
+    if ( isXPath ) {
+      await this.page.waitForXPath( reference )
+    } else {
+      await this.page.waitForSelector( reference )
+    }
+    
     const matchingElements = isXPath ? await this.page.$x( reference ) : await this.page.$$( reference )
 
     // Get elements matching reference
@@ -252,7 +255,7 @@ export default class InstagramScheduler {
     await this.page.waitForNavigation({ waitUntil: "networkidle2" });
     
     // Look for email input
-    await this.page.waitFor('input[name="email"]');
+    await this.page.waitForSelector('input[name="email"]')
 
     console.log('Entering login data')
 
@@ -344,7 +347,7 @@ export default class InstagramScheduler {
         await accountButton.click();
       }
 
-      await this.page.waitFor('div[aria-autocomplete="list"]');
+      await this.page.waitForSelector('div[aria-autocomplete="list"]')
       await sleep( 500 )
 
 
@@ -371,7 +374,7 @@ export default class InstagramScheduler {
 
 
       console.log('Looking for upload input')
-      await this.page.waitFor('input[accept*="image/*"]')
+      await this.page.waitForSelector('input[accept*="image/*"]')
       await sleep( 500 )
 
 
@@ -398,7 +401,8 @@ export default class InstagramScheduler {
 
       await this.mapElements()
 
-      await this.page.waitFor('input[placeholder="mm/dd/yyyy"]');
+
+      await this.page.waitForSelector('input[placeholder="mm/dd/yyyy"]');
 
       /* Add release date */
       let dateInput = await this.page.$('input[placeholder="mm/dd/yyyy"]');
