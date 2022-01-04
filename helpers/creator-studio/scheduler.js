@@ -109,11 +109,6 @@ export default class InstagramScheduler {
       await elementHandle.click()
     }
 
-    // await Promise.all([
-    //   this.page.waitForNavigation(),
-    //   elementHandle.click(),
-    // ])
-
     console.log('\n\n')
 
     return elementHandle
@@ -242,25 +237,21 @@ export default class InstagramScheduler {
 
 
     // console.log('Clicking "Log In or Sign Up" button')
-
-    // let loginButton = (await this.page.$$('[role="button"]'))[0];
-    // await loginButton.click();
-
     await this.findAndClick({
       friendlyName: 'Log In or Sign Up',
       reference: '[role="button"]'
     })
 
     // Wait for login page to load
-    await this.page.waitForNavigation({ waitUntil: "networkidle2" });
+    await this.page.waitForNavigation({ waitUntil: "networkidle2" })
     
     // Look for email input
     await this.page.waitForSelector('input[name="email"]')
 
     console.log('Entering login data')
 
-    await this.page.type('input[name="email"]', this.email, { delay: this.typingDelay });
-    await this.page.type('input[name="pass"]', this.password, { delay: this.typingDelay });
+    await this.page.type('input[name="email"]', this.email, { delay: this.typingDelay })
+    await this.page.type('input[name="pass"]', this.password, { delay: this.typingDelay })
 
     console.log('Clicking "Log In" button')
 
@@ -269,13 +260,10 @@ export default class InstagramScheduler {
       reference: 'button[name="login"]'
     })
 
-    // loginButton = await this.page.$('button[name="login"]');
-    // await loginButton.click();
-
 
     console.log('Waiting for login response')
 
-    await this.page.waitForNavigation({ waitUntil: "networkidle2" });
+    await this.page.waitForNavigation({ waitUntil: "networkidle2" })
 
     return
   }
@@ -295,7 +283,7 @@ export default class InstagramScheduler {
       reference: instagramTabSelector
     })
 
-    await this.page.waitForNavigation({ waitUntil: "networkidle2" });
+    await this.page.waitForNavigation({ waitUntil: "networkidle2" })
 
     // Wait for react to render dom
     await sleep( 500 )
@@ -334,7 +322,7 @@ export default class InstagramScheduler {
       })
 
       if (this.multipleAccounts) {
-        await this.page.waitForXPath("/html/body/div[5]/div/div/div[3]");
+        await this.page.waitForXPath("/html/body/div[5]/div/div/div[3]")
         await sleep( 500 )
 
         /* Select instagram account */
@@ -361,14 +349,7 @@ export default class InstagramScheduler {
       let descriptionInput = await this.page.$('div[aria-autocomplete="list"]');
       await descriptionInput.type(post.description, { delay: this.typingDelay });
 
-      // console.log('Clicking Add Content button')
       /* Add image file */
-      // const addContentButton = (await this.page.$x("//span[contains(text(), 'Add Content')]"))[1]
-      // await this.page.waitFor('.add-contentshow-drop');
-      // const addContentButton = this.page.$('.add-contentshow-drop')
-      
-      // await addContentButton.click();
-
       await this.findAndClick({
         friendlyName: 'Add Content Button',
         reference: '.add-contentshow-drop'
@@ -434,6 +415,7 @@ export default class InstagramScheduler {
         reference: 'button.schedule'
       })
 
+      // Wait for post confirmation notification
       await this.page.waitForFunction(
         `document.querySelector('body').innerText.includes('Your post has been successfully scheduled.')`
       )
