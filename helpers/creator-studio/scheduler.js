@@ -1,3 +1,4 @@
+// https://pptr.dev/
 const puppeteer = require('puppeteer');
 
 const defaultPupperteerTimeout = 0
@@ -5,6 +6,10 @@ const defaultPupperteerTimeout = 0
 const createButtonSelector = '[selector-create-post], .create-post'
 const createNewButtonXPath = "//div[ contains(., 'Create New') and @role='button' ]"
 const createPostButtonXPath = "//div[ contains(., 'Create post') and @role='button' ]"
+const clickableSelector = 'button, [role="button"], [role="link"]'
+
+
+
 
 
 function sleep( time ) {
@@ -23,27 +28,92 @@ export default class InstagramScheduler {
     this.loggedIn = false
   }
 
-  async findAndClick ( friendlyName, reference ) {
+  async findElementWithText ( text ) {
+    const clickableElementsWithTextJson = await this.page.evaluate( ({ clickableSelector, text }) => {
+      const clickableElements = Array.from( document.querySelectorAll( clickableSelector ) )
+
+      const clickableElementsWithText = clickableElements.filter( element => element.innerText.toLowerCase() === text.toLowerCase() )
+        .map( element => ({
+          innerText: element.textContent,
+          classesSelector: '.' + Array.from( element.classList ).join('.'),
+          // element
+        }))
+
+      // Must return string
+      return JSON.stringify( clickableElementsWithText )
+    }, { clickableSelector, text } )
+
+    const clickableElementsWithText = JSON.parse( clickableElementsWithTextJson )
+
+    // console.log('clickableElementsWithText', clickableElementsWithText)
+
+    return clickableElementsWithText
+  }
+
+  async clickWithJs ( selector ) {
+    await this.page.evaluate( ({ selector }) => {
+      const elementToClick = document.querySelector( selector )
+
+      elementToClick.click()
+
+      return
+    }, { selector } )
+  }
+
+  async findAndClick ( options = {} ) {
+    const {
+      friendlyName,
+      reference,
+      jsClick = false
+    } = options
+
+    await this.mapElements()
+
     const isXPath = reference.startsWith('//')
     // const referenceType = isXPath ? 'xpath' : 'selector'
 
     console.log(`Looking for ${friendlyName} as ${reference}`)
 
     await this.page.waitFor( reference )
+    // waitForSelector
+    // waitForXPath
     const matchingElements = isXPath ? await this.page.$x( reference ) : await this.page.$$( reference )
 
-    console.log(`Found ${matchingElements.length} ${friendlyName} with ${reference}`)
-
     // Get elements matching reference
-    const [ element ] = matchingElements
+    const [ elementHandle ] = matchingElements
+
+    console.log(`Found ${matchingElements.length} "${friendlyName}" element with ${reference}`)
+
+    // console.log('elementHandle', elementHandle._page)
+
+    if ( typeof elementHandle === 'undefined' ) {
+      throw new Error(`"${friendlyName}" is not defined`, reference, elementHandle)
+    }
+
+    if ( typeof elementHandle.click !== 'function' ) {
+      throw new Error(`"${friendlyName}" does not have click method`, reference, elementHandle)
+    }
 
     console.log(`Clicking ${friendlyName} with ${reference}`)
 
-    await element.click()
+    console.log('elementHandle.click', elementHandle.click)
+
+    if ( jsClick ) {
+      if ( isXPath ) throw new Error('XPath is not supported for jsClick')
+
+      await this.clickWithJs( reference )
+    } else {
+      await elementHandle.click()
+    }
+
+    // await Promise.all([
+    //   this.page.waitForNavigation(),
+    //   elementHandle.click(),
+    // ])
 
     console.log('\n\n')
 
-    return element
+    return elementHandle
   }
 
 
@@ -173,7 +243,10 @@ export default class InstagramScheduler {
     // let loginButton = (await this.page.$$('[role="button"]'))[0];
     // await loginButton.click();
 
-    await this.findAndClick( '"Log In or Sign Up"', '[role="button"]' )
+    await this.findAndClick({
+      friendlyName: 'Log In or Sign Up',
+      reference: '[role="button"]'
+    })
 
     // Wait for login page to load
     await this.page.waitForNavigation({ waitUntil: "networkidle2" });
@@ -188,7 +261,10 @@ export default class InstagramScheduler {
 
     console.log('Clicking "Log In" button')
 
-    await this.findAndClick( '"Log In Button"', 'button[name="login"]' )
+    await this.findAndClick({
+      friendlyName: 'Log In Button',
+      reference: 'button[name="login"]'
+    })
 
     // loginButton = await this.page.$('button[name="login"]');
     // await loginButton.click();
@@ -211,7 +287,10 @@ export default class InstagramScheduler {
 
     const instagramTabSelector = 'div[id="media_manager_chrome_bar_instagram_icon"]'
 
-    await this.findAndClick( 'Instagram Tab Button', instagramTabSelector )
+    await this.findAndClick({
+      friendlyName: 'Instagram Tab Button',
+      reference: instagramTabSelector
+    })
 
     await this.page.waitForNavigation({ waitUntil: "networkidle2" });
 
@@ -225,7 +304,23 @@ export default class InstagramScheduler {
 
       await sleep( 500 )
 
-      await this.findAndClick( 'Create New Button', createPostButtonXPath )
+      const createPostElements = await this.findElementWithText( 'Create post' )
+
+      // console.log('Elements with "Create post"', createPostElements)
+
+      const [ 
+        {
+          classesSelector: createPostButtonSelector
+        }
+      ] = createPostElements
+
+      // const createPostButtonSelector = '#mediaManagerFacebookComposerLeftNavButton [role="button"]'
+
+      await this.findAndClick({
+        friendlyName: 'Create New Button',
+        reference: createPostButtonSelector,
+        jsClick: true
+      })
 
       // Wait dropdown to open
       await sleep( 500 )
@@ -255,30 +350,47 @@ export default class InstagramScheduler {
 
       await this.mapElements()
 
+      console.log('Typing post description')
+
       /* Add description */
       let descriptionInput = await this.page.$('div[aria-autocomplete="list"]');
       await descriptionInput.type(post.description, { delay: this.typingDelay });
 
+      // console.log('Clicking Add Content button')
       /* Add image file */
-      const addContentButton = (await this.page.$x("//span[contains(text(), 'Add Content')]"))[1]
+      // const addContentButton = (await this.page.$x("//span[contains(text(), 'Add Content')]"))[1]
       // await this.page.waitFor('.add-contentshow-drop');
       // const addContentButton = this.page.$('.add-contentshow-drop')
       
-      await addContentButton.click();
+      // await addContentButton.click();
 
-      await this.page.waitFor('input[accept="video/*, image/*"]');
+      await this.findAndClick({
+        friendlyName: 'Add Content Button',
+        reference: '.add-contentshow-drop'
+      })
+
+
+      console.log('Looking for upload input')
+      await this.page.waitFor('input[accept*="image/*"]')
       await sleep( 500 )
 
-      let fileInput = await this.page.$('input[accept="video/*, image/*"]');
-      await fileInput.uploadFile(post.file);
+
+      console.log('Uploading post image')
+
+      let fileInput = await this.page.$('input[accept*="image/*"]')
+      await fileInput.uploadFile(post.file)
 
       await this.mapElements()
 
-      /* Click arrow button */
-      const arrowButton = await this.page.$('button.dropdownbutton')
-      await arrowButton.click();
 
-      // Click Save as draft option
+
+      /* Click arrow button */
+      console.log('Clicking arrow button')
+      const arrowButton = await this.page.$('button.dropdownbutton')
+      await arrowButton.click()
+
+
+      console.log('Clicking Save as draft option')
       const dropdownOptions = await this.page.$$('.uiContextualLayer [role="checkbox"]')
       const scheduleCheckbox = dropdownOptions[1]
 
