@@ -328,8 +328,10 @@ export default class InstagramScheduler {
       // Wait dropdown to open
       await sleep( 500 )
 
-      const instagramFeedButton = (await this.page.$x("//strong[contains(text(), 'Instagram Feed')]"))[0]
-      await instagramFeedButton.click();
+      await this.findAndClick({
+        friendlyName: 'Instagram Feed Option',
+        reference: `//strong[contains(text(), 'Instagram Feed')]`
+      })
 
       if (this.multipleAccounts) {
         await this.page.waitForXPath("/html/body/div[5]/div/div/div[3]");
@@ -388,16 +390,16 @@ export default class InstagramScheduler {
 
 
       /* Click arrow button */
-      console.log('Clicking arrow button')
-      const arrowButton = await this.page.$('button.dropdownbutton')
-      await arrowButton.click()
+      await this.findAndClick({
+        friendlyName: 'Publish Arrow Button',
+        reference: 'button.dropdownbutton'
+      })
 
-
-      console.log('Clicking Save as draft option')
-      const dropdownOptions = await this.page.$$('.uiContextualLayer [role="checkbox"]')
-      const scheduleCheckbox = dropdownOptions[1]
-
-      await scheduleCheckbox.click()
+      await this.findAndClick({
+        friendlyName: 'Schedule Post Option',
+        reference: '.uiContextualLayer div:nth-child(2) [role="checkbox"]',
+        jsClick: true
+      })
 
       await this.mapElements()
 
@@ -425,13 +427,12 @@ export default class InstagramScheduler {
       await periodInput.type(releaseTime[2], { delay: this.typingDelay });
       await sleep( 500 )
 
-      /* Click publish button */
-      const publishButton = await this.page.$(
-        'button.schedule'
-      );
-      await publishButton.click();
 
-      // await this.mapElements()
+      /* Click Schde button */
+      await this.findAndClick({
+        friendlyName: 'Confirm Schedule Button',
+        reference: 'button.schedule'
+      })
 
       await this.page.waitForFunction(
         `document.querySelector('body').innerText.includes('Your post has been successfully scheduled.')`
